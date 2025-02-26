@@ -1,9 +1,12 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-// Set canvas size
-canvas.width = 800;
-canvas.height = 600;
+// Set canvas size dynamically based on window size
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Adjust star size based on canvas size
+const starSize = Math.min(canvas.width, canvas.height) / 30; // Example: stars will be 1/30th of the smaller dimension
 
 // Rename Ball to Star
 class Star {
@@ -53,14 +56,14 @@ class Star {
     }
 }
 
-// Create stars instead of balls
+// Create stars instead of balls with dynamic size
 const stars = [
-    new Star(100, 100, 20, 'green'),
-    new Star(200, 200, 20, 'yellow'),
-    new Star(300, 300, 20, 'red'),
-    new Star(400, 400, 20, 'blue'),
-    new Star(500, 300, 20, 'purple'),
-    new Star(150, 450, 20, 'pink')
+    new Star(100, 100, starSize, 'green'),
+    new Star(200, 200, starSize, 'yellow'),
+    new Star(300, 300, starSize, 'red'),
+    new Star(400, 400, starSize, 'blue'),
+    new Star(500, 300, starSize, 'purple'),
+    new Star(150, 450, starSize, 'pink')
 ];
 
 // Animation loop
@@ -71,7 +74,7 @@ function animate() {
         star.update();
     });
 
-    // Check for collisions between balls
+    // Check for collisions between stars
     for (let i = 0; i < stars.length; i++) {
         for (let j = i + 1; j < stars.length; j++) {
             if (isColliding(stars[i], stars[j])) {
@@ -86,25 +89,25 @@ function animate() {
 // Start animation
 animate();
 
-// Function to check if two balls are colliding
-function isColliding(ball1, ball2) {
-    const dx = ball1.x - ball2.x;
-    const dy = ball1.y - ball2.y;
+// Function to check if two stars are colliding
+function isColliding(star1, star2) {
+    const dx = star1.x - star2.x;
+    const dy = star1.y - star2.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance < (ball1.radius + ball2.radius);
+    return distance < (star1.radius + star2.radius);
 }
 
-// Function to resolve the collision between two balls
-function resolveCollision(ball1, ball2) {
-    const dx = ball1.x - ball2.x;
-    const dy = ball1.y - ball2.y;
+// Function to resolve the collision between two stars
+function resolveCollision(star1, star2) {
+    const dx = star1.x - star2.x;
+    const dy = star1.y - star2.y;
     const angle = Math.atan2(dy, dx);
     
-    const speed1 = Math.sqrt(ball1.dx * ball1.dx + ball1.dy * ball1.dy);
-    const speed2 = Math.sqrt(ball2.dx * ball2.dx + ball2.dy * ball2.dy);
+    const speed1 = Math.sqrt(star1.dx * star1.dx + star1.dy * star1.dy);
+    const speed2 = Math.sqrt(star2.dx * star2.dx + star2.dy * star2.dy);
     
-    const direction1 = Math.atan2(ball1.dy, ball1.dx);
-    const direction2 = Math.atan2(ball2.dy, ball2.dx);
+    const direction1 = Math.atan2(star1.dy, star1.dx);
+    const direction2 = Math.atan2(star2.dy, star2.dx);
     
     const newVx1 = speed1 * Math.cos(direction1 - angle);
     const newVy1 = speed1 * Math.sin(direction1 - angle);
@@ -112,8 +115,14 @@ function resolveCollision(ball1, ball2) {
     const newVy2 = speed2 * Math.sin(direction2 - angle);
     
     // Swap velocities
-    ball1.dx = newVx2 * Math.cos(angle) - newVy1 * Math.sin(angle);
-    ball1.dy = newVy2 * Math.cos(angle) + newVx1 * Math.sin(angle);
-    ball2.dx = newVx1 * Math.cos(angle) - newVy2 * Math.sin(angle);
-    ball2.dy = newVy1 * Math.cos(angle) + newVx2 * Math.sin(angle);
-} 
+    star1.dx = newVx2 * Math.cos(angle) - newVy1 * Math.sin(angle);
+    star1.dy = newVy2 * Math.cos(angle) + newVx1 * Math.sin(angle);
+    star2.dx = newVx1 * Math.cos(angle) - newVy2 * Math.sin(angle);
+    star2.dy = newVy1 * Math.cos(angle) + newVx2 * Math.sin(angle);
+}
+
+// Update canvas size on window resize
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}); 
