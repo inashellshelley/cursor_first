@@ -8,7 +8,7 @@ canvas.height = window.innerHeight;
 // Adjust star size based on canvas size
 const starSize = Math.min(canvas.width, canvas.height) / 30; // Example: stars will be 1/30th of the smaller dimension
 
-// Rename Ball to Star
+// Star
 class Star {
     constructor(x, y, radius, color) {
         this.x = x;
@@ -56,7 +56,7 @@ class Star {
     }
 }
 
-// Create stars instead of balls with dynamic size
+// Create stars with dynamic size
 const stars = [
     new Star(100, 100, starSize, 'green'),
     new Star(200, 200, starSize, 'yellow'),
