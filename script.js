@@ -71,8 +71,49 @@ function animate() {
         star.update();
     });
 
+    // Check for collisions between balls
+    for (let i = 0; i < stars.length; i++) {
+        for (let j = i + 1; j < stars.length; j++) {
+            if (isColliding(stars[i], stars[j])) {
+                resolveCollision(stars[i], stars[j]);
+            }
+        }
+    }
+
     requestAnimationFrame(animate);
 }
 
 // Start animation
-animate(); 
+animate();
+
+// Function to check if two balls are colliding
+function isColliding(ball1, ball2) {
+    const dx = ball1.x - ball2.x;
+    const dy = ball1.y - ball2.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < (ball1.radius + ball2.radius);
+}
+
+// Function to resolve the collision between two balls
+function resolveCollision(ball1, ball2) {
+    const dx = ball1.x - ball2.x;
+    const dy = ball1.y - ball2.y;
+    const angle = Math.atan2(dy, dx);
+    
+    const speed1 = Math.sqrt(ball1.dx * ball1.dx + ball1.dy * ball1.dy);
+    const speed2 = Math.sqrt(ball2.dx * ball2.dx + ball2.dy * ball2.dy);
+    
+    const direction1 = Math.atan2(ball1.dy, ball1.dx);
+    const direction2 = Math.atan2(ball2.dy, ball2.dx);
+    
+    const newVx1 = speed1 * Math.cos(direction1 - angle);
+    const newVy1 = speed1 * Math.sin(direction1 - angle);
+    const newVx2 = speed2 * Math.cos(direction2 - angle);
+    const newVy2 = speed2 * Math.sin(direction2 - angle);
+    
+    // Swap velocities
+    ball1.dx = newVx2 * Math.cos(angle) - newVy1 * Math.sin(angle);
+    ball1.dy = newVy2 * Math.cos(angle) + newVx1 * Math.sin(angle);
+    ball2.dx = newVx1 * Math.cos(angle) - newVy2 * Math.sin(angle);
+    ball2.dy = newVy1 * Math.cos(angle) + newVx2 * Math.sin(angle);
+} 
